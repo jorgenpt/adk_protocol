@@ -8,19 +8,5 @@ class BitStruct::UnsignedField
     end
   end
 
-  def c_parser_function
-    if length == 8
-      ""
-    else
-      "ntoh#{c_shorthand}"
-    end
-  end
-
-  def c_serializer_function
-    if length == 8
-      ""
-    else
-      "hton#{c_shorthand}"
-    end
-  end
+  include AdkProtocol::NetworkOrder
 end
