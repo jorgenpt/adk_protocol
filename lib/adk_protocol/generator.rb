@@ -45,14 +45,6 @@ module AdkProtocol
         lines << "} #{c_type};".with_lineno
       end
 
-      def generate_accessors
-        accessors = own_fields.collect do |f|
-          [f.c_setter(self), f.c_getter(self), f.c_parser(self)]
-        end
-
-        accessors.flatten
-      end
-
       def parser_name
         "#{c_name}_parse"
       end
@@ -71,7 +63,7 @@ module AdkProtocol
         # TODO: We only support byte-aligned fields. Extend this to work with
         # bits too.
         parser += own_fields.collect do |f|
-          "  running_buffer = #{f.c_parser_name(self)}(msg, running_buffer);".with_lineno
+          f.c_parser('msg', 'running_buffer').join("\n")
         end
 
         parser << "  return running_buffer;".with_lineno
@@ -95,7 +87,7 @@ module AdkProtocol
         # TODO: We only support byte-aligned fields. Extend this to work with
         # bits too.
         serializer += own_fields.collect do |f|
-          "  buffer = #{f.c_serializer_name(self)}(msg, buffer);".with_lineno
+          f.c_serializer('msg', 'buffer').join("\n")
         end
 
         serializer << "  return buffer;".with_lineno
@@ -104,7 +96,6 @@ module AdkProtocol
 
       def generate
         code  = generate_c_struct
-        code += generate_accessors
         code += generate_parser
         code += generate_serializer
 
