@@ -7,8 +7,8 @@ class CSerializationTest < Test::Unit::TestCase
 
   def setup
     @setup_source  = "#include <stdint.h>\n#include <stdio.h>\n"
-    @setup_source += AdkProtocol::Message.generate
-    @setup_source += TestMessage.generate
+    @setup_source += AdkProtocol::Message.generate_c
+    @setup_source += TestMessage.generate_c
   end
 
   def test_build
