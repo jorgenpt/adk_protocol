@@ -23,8 +23,8 @@ module AdkProtocol
         new_name ? @message_name = new_name : (@message_name or default_message_name)
       end
 
-      include C
-      include Java
+      include CMessage
+      include JavaMessaeg
     end
   end
 end

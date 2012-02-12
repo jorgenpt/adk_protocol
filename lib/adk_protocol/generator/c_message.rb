@@ -1,5 +1,5 @@
 module AdkProtocol::Generator
-  module C
+  module CMessage
     def c_name
       message_name.snakecase
     end

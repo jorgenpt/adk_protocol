@@ -1,5 +1,5 @@
 module AdkProtocol::Generator
-  module Java
+  module JavaMessage
     JAVA_TYPES = {
       8  => 'byte',
       16 => 'short',
