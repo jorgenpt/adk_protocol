@@ -35,19 +35,18 @@ module AdkProtocol::Generator
       parser << "  if (size < #{round_byte_length}) { return 0; }".with_lineno
 
       if superclass.respond_to?(:c_parser_name)
-        parser << "  uint8_t *running_buffer = #{superclass.c_parser_name}(&msg->super, buffer, size);".with_lineno
+        parser << "  buffer = #{superclass.c_parser_name}(&msg->super, buffer, size);".with_lineno
       else
-        parser << "  uint8_t *running_buffer = buffer;".with_lineno
-        parser << "  if (!running_buffer) { return 0; }"
+        parser << "  if (!buffer) { return 0; }".with_lineno
       end
 
       # TODO: We only support byte-aligned fields. Extend this to work with
       # bits too.
       parser += own_fields.collect do |f|
-        f.c_parser('msg', 'running_buffer').join("\n")
+        f.c_parser('msg', 'buffer').join("\n")
       end
 
-      parser << "  return running_buffer;".with_lineno
+      parser << "  return buffer;".with_lineno
       parser << "}"
     end
 
@@ -62,7 +61,7 @@ module AdkProtocol::Generator
       if superclass.respond_to?(:c_serializer_name)
         serializer << "  buffer = #{superclass.c_serializer_name}(&msg->super, buffer, size);".with_lineno
       else
-        serializer << "  if (!buffer) { return 0; }"
+        serializer << "  if (!buffer) { return 0; }".with_lineno
       end
 
       # TODO: We only support byte-aligned fields. Extend this to work with
