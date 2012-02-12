@@ -8,5 +8,21 @@ class BitStruct::SignedField
     end
   end
 
+  def java_parser(buffer)
+    snippet = "  #{name} = #{buffer}.get"
+    snippet += java_type.capitalize unless java_type == 'byte'
+    snippet += "();"
+
+    [snippet]
+  end
+
+  def java_serializer(buffer)
+    snippet = "  #{buffer}.put"
+    snippet += java_type.capitalize unless java_type == 'byte'
+    snippet += "(#{name});"
+
+    [snippet]
+  end
+
   include AdkProtocol::NetworkOrder
 end

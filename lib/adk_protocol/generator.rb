@@ -1,6 +1,7 @@
 module AdkProtocol
   module Generator
     require 'adk_protocol/generator/c'
+    require 'adk_protocol/generator/java'
 
     def self.included(base)
       base.extend(ClassMethods)
@@ -10,7 +11,7 @@ module AdkProtocol
     module ClassMethods
       attr_accessor :base_struct
       def command
-        # HERP DERP FIX THIS.
+        # TODO: Find a good way to determine this schema.
         1
       end
 
@@ -23,6 +24,7 @@ module AdkProtocol
       end
 
       include C
+      include Java
     end
   end
 end

@@ -17,4 +17,12 @@ module AdkProtocol
 
     "#{HEADER}\n#{AdkProtocol::NetworkOrder::HEADER}\n#{code.join("\n")}"
   end
+
+  def self.generate_java
+    code = AdkProtocol::Message.message_types.collect do |type|
+      type.generate_java
+    end
+
+    code.join("\n")
+  end
 end
