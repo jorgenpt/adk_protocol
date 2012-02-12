@@ -19,9 +19,9 @@ class CSerializationTest < Test::Unit::TestCase
         test_message_t msg1 = {0}, msg2;
         char buffer[sizeof(test_message_t)], *buffer_left;
 
-        msg1.u8 = 255;
-        msg1.u16 = 65535;
-        msg1.u32 = 4294967295;
+        msg1.u8  = #{0b11000011};
+        msg1.u16 = #{0b1010101001010101};
+        msg1.u32 = #{0b11111111000000001000000101111110};
 
         buffer_left = test_message_serialize(&msg1, buffer, sizeof(buffer));
         printf("0 != %p: Serialize should succeed\\n", buffer_left);
