@@ -1,6 +1,11 @@
 require 'tempfile'
 
 module CBuilder
+  def c_source; @c_source; end
+  def setup_c_source
+    @c_source = "#include <stdio.h>\n" + AdkProtocol.generate_c
+  end
+
   def build(*source)
     output = Tempfile.new('adk_test')
     output.close

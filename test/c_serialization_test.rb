@@ -5,14 +5,10 @@ require 'test_message'
 class CSerializationTest < Test::Unit::TestCase
   include CBuilder
 
-  def setup
-    @setup_source  = "#include <stdint.h>\n#include <stdio.h>\n"
-    @setup_source += AdkProtocol::Message.generate_c
-    @setup_source += TestMessage.generate_c
-  end
+  setup :setup_c_source, :before => :append
 
   def test_build
-    noop_binary = build(@setup_source, 'int main() { return 0; }')
+    noop_binary = build(c_source, 'int main() { return 0; }')
     assert_true(File.exist?(noop_binary))
     assert_true(system(noop_binary))
   end
@@ -47,6 +43,6 @@ class CSerializationTest < Test::Unit::TestCase
       }
     source
 
-    build_and_assert(@setup_source, roundtrip_source)
+    build_and_assert(c_source, roundtrip_source)
   end
 end
