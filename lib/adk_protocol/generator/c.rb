@@ -5,7 +5,7 @@ module AdkProtocol::Generator
     end
 
     def c_type
-      "#{c_name}_t"
+      "struct _#{c_name}_t"
     end
 
     def c_variable
@@ -13,7 +13,7 @@ module AdkProtocol::Generator
     end
 
     def generate_c_struct
-      lines = ["typedef struct _#{c_type} {".with_lineno]
+      lines = ["struct _#{c_name}_t {".with_lineno]
       if superclass.respond_to?(:c_variable)
         lines << "  #{superclass.c_variable};".with_lineno
       end
@@ -22,7 +22,8 @@ module AdkProtocol::Generator
         "  #{f.c_variable};".with_lineno
       end
 
-      lines << "} #{c_type};".with_lineno
+      lines << "};".with_lineno
+      lines << "typedef #{c_type} #{c_name}_t;"
     end
 
     def c_parser_name
