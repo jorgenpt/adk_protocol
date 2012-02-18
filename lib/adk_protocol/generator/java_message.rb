@@ -53,11 +53,13 @@ module AdkProtocol::Generator
       serializer << "}"
     end
 
-    def generate_java
+    def generate_java(package)
+      code = ["package #{package};"]
+      code << "import java.nio.ByteBuffer;"
       if superclass.respond_to?(:java_name)
-        code = ["public class #{java_name} extends #{superclass.java_name} {"]
+        code << "public class #{java_name} extends #{superclass.java_name} {"
       else
-        code = ["public class #{java_name} {"]
+        code << "public class #{java_name} {"
       end
 
       code += generate_java_fields

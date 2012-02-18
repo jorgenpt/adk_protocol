@@ -1,18 +1,17 @@
+require 'digest/sha1'
+
 module AdkProtocol
   module Generator
-    require 'adk_protocol/generator/c'
-    require 'adk_protocol/generator/java'
+    require 'adk_protocol/generator/c_message'
+    require 'adk_protocol/generator/java_message'
 
     def self.included(base)
       base.extend(ClassMethods)
-      base.base_struct = base
     end
 
     module ClassMethods
-      attr_accessor :base_struct
       def command
-        # TODO: Find a good way to determine this schema.
-        1
+        Digest::SHA1.digest(name)[-4..-1].unpack('N').first
       end
 
       def default_message_name
@@ -23,8 +22,12 @@ module AdkProtocol
         new_name ? @message_name = new_name : (@message_name or default_message_name)
       end
 
+      def constant_name
+        message_name.upcase
+      end
+
       include CMessage
-      include JavaMessaeg
+      include JavaMessage
     end
   end
 end

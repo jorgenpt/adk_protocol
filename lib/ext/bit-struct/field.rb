@@ -36,7 +36,7 @@ class BitStruct::Field
   end
 
   def java_real_type(length_override=nil)
-    type = AdkProtocol::Generator::Java::JAVA_TYPES[length_override ? length_override : length]
+    type = AdkProtocol::Generator::JavaMessage::JAVA_TYPES[length_override ? length_override : length]
     if not type
       raise AdkProtocol::InvalidLengthException, "#{length} is not supported."
     else
