@@ -14,7 +14,7 @@ class CSerializationTest < Test::Unit::TestCase
   end
 
   def test_roundtrip_unsigned
-    roundtrip_source = <<-source.gsub(/^ {6}/, '').with_lineno
+    roundtrip_source = <<-source.gsub(/^ {6}/, '')
       int main() {
         test_message_t msg1 = {0}, msg2;
         char buffer[sizeof(test_message_t)], *buffer_left;
@@ -47,7 +47,7 @@ class CSerializationTest < Test::Unit::TestCase
   end
 
   def test_roundtrip_signed
-    roundtrip_source = <<-source.gsub(/^ {6}/, '').with_lineno
+    roundtrip_source = <<-source.gsub(/^ {6}/, '')
       int main() {
         test_message_t msg1 = {0}, msg2;
         char buffer[sizeof(test_message_t)], *buffer_left;

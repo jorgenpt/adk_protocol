@@ -15,16 +15,16 @@ module AdkProtocol::Generator
     end
 
     def generate_c_struct
-      lines = ["struct _#{c_name}_t {".with_lineno]
+      lines = ["struct _#{c_name}_t {"]
       if superclass.respond_to?(:c_variable)
-        lines << "  #{superclass.c_variable};".with_lineno
+        lines << "  #{superclass.c_variable};"
       end
 
       lines += own_fields.collect do |f|
-        "  #{f.c_variable};".with_lineno
+        "  #{f.c_variable};"
       end
 
-      lines << "};".with_lineno
+      lines << "};"
       lines << "typedef #{c_type} #{c_name}_t;"
     end
 
@@ -35,12 +35,12 @@ module AdkProtocol::Generator
     def generate_c_parser
       parser = CFunction.new('uint8_t*', c_parser_name, "#{c_type}* msg", 'uint8_t* buffer', 'uint32_t size')
 
-      parser << "  if (size < #{round_byte_length}) { return 0; }".with_lineno
+      parser << "  if (size < #{round_byte_length}) { return 0; }"
 
       if superclass.respond_to?(:c_parser_name)
-        parser << "  buffer = #{superclass.c_parser_name}(&msg->super, buffer, size);".with_lineno
+        parser << "  buffer = #{superclass.c_parser_name}(&msg->super, buffer, size);"
       else
-        parser << "  if (!buffer) { return 0; }".with_lineno
+        parser << "  if (!buffer) { return 0; }"
       end
 
       # TODO: We only support byte-aligned fields. Extend this to work with
@@ -49,7 +49,7 @@ module AdkProtocol::Generator
         parser << f.c_parser('msg', 'buffer').join("\n")
       end
 
-      parser << "  return buffer;".with_lineno
+      parser << "  return buffer;"
     end
 
     def c_serializer_name
@@ -58,12 +58,12 @@ module AdkProtocol::Generator
 
     def generate_c_serializer
       serializer = CFunction.new('uint8_t*', c_serializer_name, "#{c_type}* msg", 'uint8_t* buffer', 'uint32_t size')
-      serializer << "  if (size < #{round_byte_length}) { return 0; }".with_lineno
+      serializer << "  if (size < #{round_byte_length}) { return 0; }"
 
       if superclass.respond_to?(:c_serializer_name)
-        serializer << "  buffer = #{superclass.c_serializer_name}(&msg->super, buffer, size);".with_lineno
+        serializer << "  buffer = #{superclass.c_serializer_name}(&msg->super, buffer, size);"
       else
-        serializer << "  if (!buffer) { return 0; }".with_lineno
+        serializer << "  if (!buffer) { return 0; }"
       end
 
       # TODO: We only support byte-aligned fields. Extend this to work with
@@ -72,8 +72,7 @@ module AdkProtocol::Generator
         serializer << f.c_serializer('msg', 'buffer').join("\n")
       end
 
-      serializer << "  return buffer;".with_lineno
-      serializer << "}"
+      serializer << "  return buffer;"
     end
 
     def generate_c
