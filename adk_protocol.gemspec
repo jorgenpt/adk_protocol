@@ -24,5 +24,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_runtime_dependency 'bit-struct'
+
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rdoc'
   s.add_development_dependency 'test-unit', '~> 2.4.5'
 end
