@@ -16,7 +16,7 @@ module AdkProtocol
       end
     end
 
-    unsigned :protocol_signature, 32, "A signature for the protocol version"
-    unsigned :command, 32, "The command"
+    signed :protocol_signature, 32, "A signature for the protocol version"
+    signed :command, 32, "The command"
   end
 end
