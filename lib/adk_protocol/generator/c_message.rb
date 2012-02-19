@@ -1,3 +1,5 @@
+require 'adk_protocol/generator/c_function'
+
 module AdkProtocol::Generator
   module CMessage
     def c_name
@@ -31,7 +33,8 @@ module AdkProtocol::Generator
     end
 
     def generate_c_parser
-      parser = ["uint8_t *#{c_parser_name}(#{c_type} *msg, uint8_t *buffer, uint32_t size) {".with_lineno]
+      parser = CFunction.new('uint8_t*', c_parser_name, "#{c_type}* msg", 'uint8_t* buffer', 'uint32_t size')
+
       parser << "  if (size < #{round_byte_length}) { return 0; }".with_lineno
 
       if superclass.respond_to?(:c_parser_name)
@@ -42,12 +45,11 @@ module AdkProtocol::Generator
 
       # TODO: We only support byte-aligned fields. Extend this to work with
       # bits too.
-      parser += own_fields.collect do |f|
-        f.c_parser('msg', 'buffer').join("\n")
+      own_fields.each do |f|
+        parser << f.c_parser('msg', 'buffer').join("\n")
       end
 
       parser << "  return buffer;".with_lineno
-      parser << "}"
     end
 
     def c_serializer_name
@@ -55,7 +57,7 @@ module AdkProtocol::Generator
     end
 
     def generate_c_serializer
-      serializer = ["uint8_t *#{c_serializer_name}(#{c_type} *msg, uint8_t *buffer, uint32_t size) {".with_lineno]
+      serializer = CFunction.new('uint8_t*', c_serializer_name, "#{c_type}* msg", 'uint8_t* buffer', 'uint32_t size')
       serializer << "  if (size < #{round_byte_length}) { return 0; }".with_lineno
 
       if superclass.respond_to?(:c_serializer_name)
@@ -66,8 +68,8 @@ module AdkProtocol::Generator
 
       # TODO: We only support byte-aligned fields. Extend this to work with
       # bits too.
-      serializer += own_fields.collect do |f|
-        f.c_serializer('msg', 'buffer').join("\n")
+      own_fields.collect do |f|
+        serializer << f.c_serializer('msg', 'buffer').join("\n")
       end
 
       serializer << "  return buffer;".with_lineno
@@ -75,11 +77,9 @@ module AdkProtocol::Generator
     end
 
     def generate_c
-      code  = generate_c_struct
-      code += generate_c_parser
-      code += generate_c_serializer
-
-      code.join("\n") + "\n"
+      code  = [generate_c_struct]
+      code << generate_c_parser
+      code << generate_c_serializer
     end
   end
 end

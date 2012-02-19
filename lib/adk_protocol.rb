@@ -13,20 +13,27 @@ module AdkProtocol
   def self.generate_c
     types = AdkProtocol::Message.message_types
 
-    code  = ["enum _message_types {"]
-    code += types.collect do |type|
+    header  = [HEADER, "enum _message_types {"]
+    header += types.collect do |type|
       "  #{type.constant_name} = #{type.command},"
     end
-    code << "};"
-    code << "typedef enum _message_types message_types;"
+    header << "};"
+    header << "typedef enum _message_types message_types;"
 
-    code += types.collect do |type|
-      type.generate_c
+    implementation = [AdkProtocol::NetworkOrder::HEADER]
+
+    types.collect do |type|
+      type.generate_c.each do |snippet|
+        if snippet.respond_to?(:prototype)
+          header << snippet.prototype
+          implementation << snippet.to_s
+        else
+          header << snippet.join("\n")
+        end
+      end
     end
 
-    #  TODO: This needs to yield the function declarations as its first
-    #  argument.
-    yield '', "#{HEADER}\n#{AdkProtocol::NetworkOrder::HEADER}\n#{code.join("\n")}"
+    yield header.join("\n"), implementation.join("\n")
   end
 
   def self.generate_java(package)

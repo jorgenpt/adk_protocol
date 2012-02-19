@@ -61,13 +61,20 @@ class AdkProtocol::Task < Rake::TaskLib
       AdkProtocol.generate_c do |header, implementation|
         FileUtils.mkdir_p(@c_dir)
         base_path = File.join(@c_dir, @c_name)
+        constant_guard = "_#{base_path}.h_".upcase.gsub(/[^A-Z_]/, '_')
 
         File.open("#{base_path}.h", 'w') do |file|
+          file.write("#ifndef #{constant_guard}\n")
+          file.write("#define #{constant_guard}\n")
           file.write(header)
+          file.write("\n")
+          file.write("#endif /* #{constant_guard} */\n")
         end
 
         File.open("#{base_path}.c", 'w') do |file|
+          file.write("#include \"#{@c_name}.h\"\n")
           file.write(implementation)
+          file.write("\n")
         end
       end
     end
