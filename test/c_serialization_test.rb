@@ -1,7 +1,5 @@
 require File.absolute_path(File.dirname(__FILE__) + '/test_helpers')
 
-require 'test_message'
-
 class CSerializationTest < Test::Unit::TestCase
   include CBuilder
 

@@ -66,7 +66,9 @@ module AdkProtocol::Generator
           buffer.order(ByteOrder.BIG_ENDIAN);
           buffer.mark();
           Message message = new Message();
-          message.parseBuffer(buffer);
+          if (!message.parseBuffer(buffer)) {
+            return null;
+          }
           buffer.reset();
 
           Integer type = new Integer(message.command);

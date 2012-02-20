@@ -1,0 +1,7 @@
+$LOAD_PATH << '../lib'
+
+require 'adk_protocol/task'
+
+require './test_message'
+
+AdkProtocol::Task.new

@@ -15,9 +15,11 @@ class BitStruct::UnsignedField
   end
 
   def java_parser(buffer)
-    snippet = "  #{name} = (#{adk_java_type})(#{buffer}.get"
+    snippet = "  #{name} = (#{adk_java_type})((#{adk_java_type})#{buffer}.get"
     snippet += adk_java_real_type.capitalize unless adk_java_real_type == 'byte'
-    snippet += "() & 0x#{((1 << length) - 1).to_s(16)});"
+    snippet += "() & 0x#{((1 << length) - 1).to_s(16)}"
+    snippet += "L" if length == 32
+    snippet += ");"
 
     [snippet]
   end

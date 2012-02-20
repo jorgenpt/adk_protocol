@@ -7,4 +7,7 @@ $LOAD_PATH << "#{root}/lib" << "#{root}/test"
 require 'test-unit'
 require 'adk_protocol'
 
+require 'test_message'
+
 require 'c_helpers'
+require 'java_helpers'
