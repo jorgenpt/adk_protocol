@@ -10,20 +10,16 @@ module CBuilder
   end
 
   def build(*source)
-    output = Tempfile.new('adk_test')
-    output.close
-    compiler = IO.popen("gcc -x c - -o #{output.path}", 'w') do |compiler|
-      compiler.write(source.join("\n"))
-    end
+    dir = Dir.mktmpdir('adk_test_build')
+    output = File.join(dir, 'adk_test')
+    input = File.join(dir, 'adk_test.c')
+    File.open(input, 'w') { |f| f.write(source.join("\n")) }
 
-    dump = Tempfile.new(['adk_test', '.c'])
-    path = dump.path
-    dump.close!
-    File.open(path, 'w') { |f| f.write(source.join("\n")) }
+    %x[gcc -o #{output} #{input}]
 
-    assert_equal(0, $?.exitstatus, "Compilation failed with status #{$?.exitstatus}. You can find source here: #{path}")
+    assert_equal(0, $?.exitstatus, "Compilation failed with status #{$?.exitstatus}. You can find source here: #{input}")
 
-    output.path
+    output
   end
 
   ASSERT_REGEX = /^(\S+)\s*(=|!=)\s*(\S+)\s*:\s*(.*)$/
