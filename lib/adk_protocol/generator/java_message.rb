@@ -53,6 +53,18 @@ module AdkProtocol::Generator
       serializer << "}"
     end
 
+    def generate_java_exceptions
+      <<-exceptions.gsub(/^ {6}/, '')
+        public static class ParsingException extends Exception {
+          public ParsingException(String message) { super(message); }
+          public ParsingException(Throwable cause) { super(cause); }
+        }
+        public static class InvalidMessageTypeException extends ParsingException {
+          public InvalidMessageTypeException(String message) { super(message); }
+        }
+      exceptions
+    end
+
     def generate_java_factory_parser
       class_arg = "Class<? extends #{adk_java_name}>"
       <<-func.gsub(/^ {6}/, '')
@@ -62,7 +74,7 @@ module AdkProtocol::Generator
           messages.put(new Integer(message), klass);
         }
 
-        public static #{adk_java_name} parse(ByteBuffer buffer) throws InstantiationException, IllegalAccessException {
+        public static #{adk_java_name} parse(ByteBuffer buffer) throws ParsingException {
           buffer.order(ByteOrder.BIG_ENDIAN);
           buffer.mark();
           Message message = new Message();
@@ -75,12 +87,12 @@ module AdkProtocol::Generator
           #{class_arg} impl = messages.get(type);
 
           if (impl == null) {
-            return null;
+            throw new InvalidMessageTypeException("Unknown message: " + type.toString() + ", known types: " + messages.keySet());
           } else {
             try {
               message = impl.newInstance();
-            } catch (Exception e) {
-              return null;
+            } catch (Throwable e) {
+              throw new ParsingException(e);
             }
 
             if (message.parseBuffer(buffer)) {
@@ -103,6 +115,7 @@ module AdkProtocol::Generator
         code << "import java.nio.ByteOrder;"
         code << "import java.util.HashMap;"
         code << "public class #{adk_java_name} {"
+        code << generate_java_exceptions
         code << generate_java_factory_parser
       end
 
