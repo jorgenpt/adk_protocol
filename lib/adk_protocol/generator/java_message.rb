@@ -11,6 +11,14 @@ module AdkProtocol::Generator
       message_name
     end
 
+    def generate_java_constructor
+      ["  public #{adk_java_name}() { command = MessageTypes.#{constant_name}; }"]
+    end
+
+    def generate_java_methods
+      ["  public static long size() { return #{round_byte_length}; }"]
+    end
+
     def generate_java_fields
       own_fields.collect do |f|
         "  public #{f.java_variable};"
@@ -120,6 +128,8 @@ module AdkProtocol::Generator
       end
 
       code += generate_java_fields
+      code += generate_java_constructor
+      code += generate_java_methods
       code += generate_java_parser.collect {|l| "  " + l}
       code += generate_java_serializer.collect {|l| "  " + l}
       code << '}'

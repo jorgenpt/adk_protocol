@@ -25,12 +25,9 @@ class JavaSerializationTest < Test::Unit::TestCase
     omit_unless(defined?(JRUBY_VERSION), "Java tests need JRuby")
     import_protocol
 
-    # TODO: TestMessage.size?
-    buffer = ByteBuffer.allocate(256)
+    buffer = ByteBuffer.allocate(TestMessage.size)
 
     msg1 = TestMessage.new
-    # TODO: Set this in the TestMessage constructor.
-    msg1.command = MessageTypes::TESTMESSAGE
     msg1.u8  = 0b11000011
     msg1.u16 = 0b1010101001010101
     msg1.u32 = 0b11111111000000001000000101111110
@@ -49,12 +46,9 @@ class JavaSerializationTest < Test::Unit::TestCase
     omit_unless(defined?(JRUBY_VERSION), "Java tests need JRuby")
     import_protocol
 
-    # TODO: TestMessage.size?
-    buffer = ByteBuffer.allocate(256)
+    buffer = ByteBuffer.allocate(TestMessage.size)
 
     msg1 = TestMessage.new
-    # TODO: Set this in the TestMessage constructor.
-    msg1.command = MessageTypes::TESTMESSAGE
     msg1.s8 = java.lang.Byte::MIN_VALUE
     msg1.s16 = java.lang.Short::MIN_VALUE
     msg1.s32 = java.lang.Integer::MIN_VALUE
