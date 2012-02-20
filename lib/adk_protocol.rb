@@ -49,7 +49,7 @@ module AdkProtocol
     yield 'MessageTypes', code.join("\n")
 
     types.each do |type|
-      yield type.java_name, type.generate_java(package)
+      yield type.adk_java_name, type.generate_java(package)
     end
   end
 end

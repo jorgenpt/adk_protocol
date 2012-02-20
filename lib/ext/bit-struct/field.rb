@@ -28,14 +28,14 @@ class BitStruct::Field
   end
 
   def java_variable
-    "#{java_type} #{name}"
+    "#{adk_java_type} #{name}"
   end
 
-  def java_type
-    java_real_type
+  def adk_java_type
+    adk_java_real_type
   end
 
-  def java_real_type(length_override=nil)
+  def adk_java_real_type(length_override=nil)
     type = AdkProtocol::Generator::JavaMessage::JAVA_TYPES[length_override ? length_override : length]
     if not type
       raise AdkProtocol::InvalidLengthException, "#{length} is not supported."

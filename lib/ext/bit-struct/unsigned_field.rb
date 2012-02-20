@@ -8,15 +8,15 @@ class BitStruct::UnsignedField
     end
   end
 
-  def java_type
+  def adk_java_type
     # We have to use a bigger type to store unsigned values, since Java doesn't
     # have the concept of unsigned types.
-    java_real_type(length * 2)
+    adk_java_real_type(length * 2)
   end
 
   def java_parser(buffer)
-    snippet = "  #{name} = (#{java_type})(#{buffer}.get"
-    snippet += java_real_type.capitalize unless java_real_type == 'byte'
+    snippet = "  #{name} = (#{adk_java_type})(#{buffer}.get"
+    snippet += adk_java_real_type.capitalize unless adk_java_real_type == 'byte'
     snippet += "() & 0x#{((1 << length) - 1).to_s(16)});"
 
     [snippet]
@@ -24,8 +24,8 @@ class BitStruct::UnsignedField
 
   def java_serializer(buffer)
     snippet = "  #{buffer}.put"
-    snippet += java_real_type.capitalize unless java_real_type == 'byte'
-    snippet += "((#{java_real_type})#{name});"
+    snippet += adk_java_real_type.capitalize unless adk_java_real_type == 'byte'
+    snippet += "((#{adk_java_real_type})#{name});"
 
     [snippet]
   end

@@ -10,7 +10,7 @@ class BitStruct::SignedField
 
   def java_parser(buffer)
     snippet = "  #{name} = #{buffer}.get"
-    snippet += java_type.capitalize unless java_type == 'byte'
+    snippet += adk_java_type.capitalize unless adk_java_type == 'byte'
     snippet += "();"
 
     [snippet]
@@ -18,7 +18,7 @@ class BitStruct::SignedField
 
   def java_serializer(buffer)
     snippet = "  #{buffer}.put"
-    snippet += java_type.capitalize unless java_type == 'byte'
+    snippet += adk_java_type.capitalize unless adk_java_type == 'byte'
     snippet += "(#{name});"
 
     [snippet]

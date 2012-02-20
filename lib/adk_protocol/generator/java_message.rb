@@ -7,7 +7,7 @@ module AdkProtocol::Generator
       64 => 'long',
     }
 
-    def java_name
+    def adk_java_name
       message_name
     end
 
@@ -54,7 +54,7 @@ module AdkProtocol::Generator
     end
 
     def generate_java_factory_parser
-      class_arg = "Class<? extends #{java_name}>"
+      class_arg = "Class<? extends #{adk_java_name}>"
       <<-func.gsub(/^ {6}/, '')
         private static HashMap<Integer, #{class_arg}> messages = new HashMap<Integer, #{class_arg}>();
 
@@ -62,7 +62,7 @@ module AdkProtocol::Generator
           messages.put(new Integer(message), klass);
         }
 
-        public static #{java_name} parse(ByteBuffer buffer) throws InstantiationException, IllegalAccessException {
+        public static #{adk_java_name} parse(ByteBuffer buffer) throws InstantiationException, IllegalAccessException {
           buffer.order(ByteOrder.BIG_ENDIAN);
           buffer.mark();
           Message message = new Message();
@@ -94,13 +94,13 @@ module AdkProtocol::Generator
     def generate_java(package)
       code = ["package #{package};"]
       code << "import java.nio.ByteBuffer;"
-      if superclass.respond_to?(:java_name)
-        code << "public class #{java_name} extends #{superclass.java_name} {"
-        code << "  static { #{superclass.java_name}.registerMessage(#{command}, #{java_name}.class); }"
+      if superclass.respond_to?(:adk_java_name)
+        code << "public class #{adk_java_name} extends #{superclass.adk_java_name} {"
+        code << "  static { #{superclass.adk_java_name}.registerMessage(#{command}, #{adk_java_name}.class); }"
       else
         code << "import java.nio.ByteOrder;"
         code << "import java.util.HashMap;"
-        code << "public class #{java_name} {"
+        code << "public class #{adk_java_name} {"
         code << generate_java_factory_parser
       end
 
