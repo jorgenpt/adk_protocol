@@ -18,13 +18,13 @@ class BitStruct::Field
   end
 
   def c_parser(msg, buffer)
-    ["  #{msg}->#{name} = #{c_parser_function}(*((#{c_type} *)#{buffer}));",
-     "  #{buffer} += #{round_byte_length};"]
+    ["#{msg}->#{name} = #{c_parser_function}(*((#{c_type} *)#{buffer}));",
+     "#{buffer} += #{round_byte_length};"]
   end
 
   def c_serializer(msg, buffer)
-    ["  (*((#{c_type} *)#{buffer})) = #{c_serializer_function}(#{msg}->#{name});",
-     "  #{buffer} += #{round_byte_length};"]
+    ["(*((#{c_type} *)#{buffer})) = #{c_serializer_function}(#{msg}->#{name});",
+     "#{buffer} += #{round_byte_length};"]
   end
 
   def java_variable

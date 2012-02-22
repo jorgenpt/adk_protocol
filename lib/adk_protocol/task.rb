@@ -9,10 +9,8 @@ require 'adk_protocol'
 class AdkProtocol::Task < Rake::TaskLib
   attr_accessor :name
 
-  attr_accessor :java_dir
-  attr_accessor :java_package
-  attr_accessor :c_dir
-  attr_accessor :c_name
+  attr_accessor :java_dir, :java_package
+  attr_accessor :c_dir, :c_name, :c_allocator
 
   def initialize(name = :adk_protocol)
     defaults
@@ -30,6 +28,7 @@ class AdkProtocol::Task < Rake::TaskLib
     @java_package = 'com.bitspatter.adk_protocol'
     @c_dir = 'gen/c'
     @c_name = 'adk_protocol'
+    @c_allocator = :dynamic
   end
 
   def task_description
@@ -58,7 +57,7 @@ class AdkProtocol::Task < Rake::TaskLib
 
     desc c_task_description
     task c_task_name do
-      AdkProtocol.generate_c do |header, implementation|
+      AdkProtocol.generate_c(@c_allocator.to_sym) do |header, implementation|
         FileUtils.mkdir_p(@c_dir)
         base_path = File.join(@c_dir, @c_name)
         constant_guard = "_#{base_path}.h_".upcase.gsub(/[^A-Z_]/, '_')

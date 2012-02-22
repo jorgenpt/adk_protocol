@@ -14,7 +14,7 @@ module AdkProtocol::Generator
     end
 
     def to_s
-      "#{return_type} #{name}(#{args.join(', ')}) {\n" + self.join("\n") + "\n}"
+      "#{return_type} #{name}(#{args.join(', ')}) {\n  " + self.join("\n  ") + "\n}"
     end
   end
 end

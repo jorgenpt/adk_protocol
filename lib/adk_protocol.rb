@@ -10,7 +10,7 @@ require 'adk_protocol/message'
 
 module AdkProtocol
   HEADER = "#include <stdint.h>"
-  def self.generate_c
+  def self.generate_c(allocator)
     types = AdkProtocol::Message.message_types
 
     header  = [HEADER, "enum _message_types {"]
@@ -32,6 +32,11 @@ module AdkProtocol
         end
       end
     end
+
+    preamble, function = AdkProtocol::Message.generate_c_factory_parser(allocator)
+    header << function.prototype
+    implementation += preamble
+    implementation << function.to_s
 
     yield header.join("\n"), implementation.join("\n")
   end

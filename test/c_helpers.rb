@@ -4,7 +4,7 @@ module CBuilder
   def c_source; @c_source; end
   def setup_c_source
     @c_source = "#include <stdio.h>\n"
-    AdkProtocol.generate_c do |header, implementation|
+    AdkProtocol.generate_c(:static) do |header, implementation|
       @c_source += header + "\n" + implementation
     end
   end
